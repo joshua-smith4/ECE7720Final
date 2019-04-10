@@ -16,7 +16,7 @@ import logging
 import numpy as np
 import tensorflow as tf
 
-from cleverhans.compat import flags
+#from cleverhans.compat import flags
 from cleverhans.loss import CrossEntropy
 from cleverhans.dataset import MNIST
 from cleverhans.utils_tf import model_eval
@@ -25,7 +25,7 @@ from cleverhans.attacks import FastGradientMethod
 from cleverhans.utils import AccuracyReport, set_log_level
 from cleverhans.model_zoo.basic_cnn import ModelBasicCNN
 
-FLAGS = flags.FLAGS
+#FLAGS = flags.FLAGS
 
 NB_EPOCHS = 6
 BATCH_SIZE = 128
@@ -196,25 +196,9 @@ def main(argv=None):
   from cleverhans_tutorials import check_installation
   check_installation(__file__)
 
-  mnist_tutorial(nb_epochs=FLAGS.nb_epochs, batch_size=FLAGS.batch_size,
-                 learning_rate=FLAGS.learning_rate,
-                 clean_train=FLAGS.clean_train,
-                 backprop_through_attack=FLAGS.backprop_through_attack,
-                 nb_filters=FLAGS.nb_filters)
+  mnist_tutorial()
 
 
 if __name__ == '__main__':
-  flags.DEFINE_integer('nb_filters', NB_FILTERS,
-                       'Model size multiplier')
-  flags.DEFINE_integer('nb_epochs', NB_EPOCHS,
-                       'Number of epochs to train model')
-  flags.DEFINE_integer('batch_size', BATCH_SIZE,
-                       'Size of training batches')
-  flags.DEFINE_float('learning_rate', LEARNING_RATE,
-                     'Learning rate for training')
-  flags.DEFINE_bool('clean_train', CLEAN_TRAIN, 'Train on clean examples')
-  flags.DEFINE_bool('backprop_through_attack', BACKPROP_THROUGH_ATTACK,
-                    ('If True, backprop through adversarial example '
-                     'construction process during adversarial training'))
 
   tf.app.run()
