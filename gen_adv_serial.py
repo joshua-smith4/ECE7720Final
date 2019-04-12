@@ -20,6 +20,10 @@ args = parser.parse_args()
 x_train = x_train.reshape(x_train.shape[0], x_train.shape[1], x_train.shape[2], 1)
 x_test = x_test.reshape(x_test.shape[0], x_test.shape[1], x_test.shape[2], 1)
 
+num_classes = 10
+y_train = keras.utils.to_categorical(y_train, num_classes)
+y_test = keras.utils.to_categorical(y_test, num_classes)
+
 model_keras = load_model(args.modelfile)
 
 score = model_keras.evaluate(x_test, y_test, verbose=0)
