@@ -81,8 +81,8 @@ if __name__ == '__main__':
     print(x_train.shape, x_train.dtype)
 
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": train_data},
-        y=train_labels,
+        x={"x": x_train},
+        y=y_train,
         batch_size=100,
         num_epochs=None,
         shuffle=True)
@@ -92,8 +92,8 @@ if __name__ == '__main__':
         steps=10)
 
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": eval_data},
-        y=eval_labels,
+        x={"x": x_test},
+        y=y_test,
         num_epochs=1,
         shuffle=False)
 
