@@ -38,5 +38,5 @@ print('model test accuracy:', score[1])
 model_clever = KerasModelWrapper(model_keras)
 fgsm = FastGradientMethod(model_clever)
 
-gen_graph = fgsm.generate(x_train[0], eps=0.3, clip_min=0., clip_max=1.)
+gen_graph = fgsm.generate(model_keras.input, eps=0.3, clip_min=0., clip_max=1.)
 print(gen_graph)
