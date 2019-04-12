@@ -76,7 +76,9 @@ if __name__ == '__main__':
 
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
     x_train = x_train/np.float32(255)
+    y_train = y_train.astype(np.int32)
     x_test = x_test/np.float32(255)
+    y_test = y_test.astype(np.int32)
 
     print(x_train.shape, x_train.dtype)
 
