@@ -69,12 +69,33 @@ def cnn_model_fn(features, labels, mode):
     return tf.estimator.EstimatorSpec(
         mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
+if __name__ == '__main__':
 
-mnist_classifier = tf.estimator.Estimator(
-    model_fn=cnn_model_fn, model_dir="/home/jsmith/AbsRefNNFramework/models/mnist_cnn_tf")
+    mnist_classifier = tf.estimator.Estimator(
+        model_fn=cnn_model_fn, model_dir="/home/jsmith/AbsRefNNFramework/models/mnist_cnn_tf")
 
-(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
-x_train = x_train/np.float32(255)
-x_test = x_test/np.float32(255)
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+    x_train = x_train/np.float32(255)
+    x_test = x_test/np.float32(255)
 
-print(x_train.shape, x_train.dtype)
+    print(x_train.shape, x_train.dtype)
+
+    train_input_fn = tf.estimator.inputs.numpy_input_fn(
+        x={"x": train_data},
+        y=train_labels,
+        batch_size=100,
+        num_epochs=None,
+        shuffle=True)
+
+    mnist_classifier.train(
+        input_fn=train_input_fn,
+        steps=10)
+
+    eval_input_fn = tf.estimator.inputs.numpy_input_fn(
+        x={"x": eval_data},
+        y=eval_labels,
+        num_epochs=1,
+        shuffle=False)
+
+    eval_results = mnist_classifier.evaluate(input_fn=eval_input_fn)
+    print(eval_results)
