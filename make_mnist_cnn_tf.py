@@ -74,7 +74,7 @@ mnist_classifier = tf.estimator.Estimator(
     model_fn=cnn_model_fn, model_dir="/home/jsmith/AbsRefNNFramework/models/mnist_cnn_tf")
 
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
-x_train /= 255.0
-x_test /= 255.0
+x_train = x_train/np.float32(255)
+x_test = x_test/np.float32(255)
 
 print(x_train.shape, x_train.dtype)
