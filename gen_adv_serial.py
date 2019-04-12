@@ -17,6 +17,8 @@ parser.add_argument('-m','--modelfile', required=True)
 args = parser.parse_args()
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
+x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
 
 model_keras = load_model(args.modelfile)
 
