@@ -2,7 +2,6 @@ import os
 import argparse
 
 import tensorflow as tf
-tf.enable_eager_execution()
 
 from tensorflow import keras
 import numpy as np
