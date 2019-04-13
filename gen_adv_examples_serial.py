@@ -29,7 +29,7 @@ grad, = tf.gradients(model['loss'], x)
 epsilon = tf.placeholder(tf.float32)
 optimal_perturbation = tf.multiply(tf.sign(grad), epsilon)
 adv_example_unclipped = tf.add(optimal_perturbation, x)
-adv_example = tf.clip_by_value(adv_example_unclipped,0.0,1.0)
+adv_example = tf.clip_by_value(adv_example_unclipped, 0.0, 1.0)
 
 classes = tf.argmax(model['probability'], axis=1)
 
@@ -38,22 +38,22 @@ idx = args.idx
 epsilon_range = (args.epsmin, args.epsmax)
 
 config = tf.ConfigProto(
-        device_count = {'GPU': 0}
+    device_count={'GPU': 0}
 )
 with tf.Session(config=config) as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
     print('Correct Class: {}'.format(y_train[idx]))
-    prob_x = model['probability'].eval(feed_dict={x: x_train[idx:idx+1]})
-    print(prob_x, prob_x.shape)
-    class_x = classes.eval(feed_dict={x: x_train[idx:idx+1]})
-    print('Class by network: {}'.format(class_x))
+    class_x = classes.eval(feed_dict={x: x_train[idx:idx + 1]})
+    print('Predicted class of input {}: {}'.format(idx, class_x))
     start = time.time()
     for i in range(args.numgens):
         adv = adv_example.eval(
-            feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(epsilon_range[0], epsilon_range[1], size=(28,28))})
-        class_adv = classes.eval(
-            feed_dict={x: adv, y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
-        # print('Class of adv: {}'.format(class_adv))
+            feed_dict={
+                x: x_train[idx:idx + 1],
+                epsilon: np.random.uniform(
+                    epsilon_range[0], epsilon_range[1], size=(28, 28))
+            })
+        class_adv = classes.eval(feed_dict={x: adv})
         if class_adv != y_train[0]:
             adv_examples += [adv]
     print('duration: {}'.format(time.time() - start))
