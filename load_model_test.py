@@ -23,18 +23,18 @@ adv_example = tf.add(optimal_perturbation, x)
 classes = tf.argmax(model['probability'])
 
 adv_examples = []
-
+idx = 100
 with tf.Session() as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
-    print('Correct Class: {}'.format(y_train[0]))
+    print('Correct Class: {}'.format(y_train[idx]))
     class_x = classes.eval(
-        feed_dict={x: x_train[0:0], y: y_train[0:0], epsilon: np.random.uniform(0.001, 0.2)})
+        feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
     print('Class by network: {}'.format(class_x))
     for i in range(1000):
         adv = adv_example.eval(
-            feed_dict={x: x_train[0], y: y_train[0], epsilon: np.random.uniform(0.001, 0.2)})
+            feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
         class_adv = classes.eval(
-            feed_dict={x: adv, y: y_train[0], epsilon: np.random.uniform(0.001, 0.2)})
+            feed_dict={x: adv, y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
         print('Class of adv: {}'.format(class_adv))
         if class_adv != y_train[0]:
             adv_examples += [adv]
