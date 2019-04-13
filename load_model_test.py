@@ -18,7 +18,8 @@ y_test = y_test.astype(np.int32)
 grad, = tf.gradients(model['loss'], x)
 epsilon = tf.placeholder(tf.float32)
 optimal_perturbation = tf.multiply(tf.sign(grad), epsilon)
-adv_example = tf.add(optimal_perturbation, x)
+adv_example_unclipped = tf.add(optimal_perturbation, x)
+adv_example = tf.clip_by_value(adv_example_unclipped,0.0,1.0)
 
 classes = tf.argmax(model['probability'], axis=1)
 
