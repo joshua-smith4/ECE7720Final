@@ -91,7 +91,7 @@ if __name__ == '__main__':
         for epoch in range(num_epochs):
             print('Epoch: {}'.format(epoch))
             for i in range(x_train.shape[0] // batch_size):
-                print('Batch: {}'.format(i))
+                # print('Batch: {}'.format(i))
                 batch_indices = np.random.randint(x_train.shape[0], size=batch_size)
                 x_batch = x_train[batch_indices]
                 y_batch = y_train[batch_indices]
