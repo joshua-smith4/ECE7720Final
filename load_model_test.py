@@ -42,3 +42,4 @@ with tf.Session() as sess:
         print('Class of adv: {}'.format(class_adv))
         if class_adv != y_train[0]:
             adv_examples += [adv]
+adv_examples = np.concatenate(adv_examples, axis=0)
