@@ -54,7 +54,7 @@ def build_cnn_mnist_model(input_placeholder, labels, training=True):
     # Configure the Training Op (for TRAIN mode)
     optimizer = tf.train.AdamOptimizer()
     train_op = optimizer.minimize(loss)
-    correct = tf.nn.in_top_k(logits, y, 1)
+    correct = tf.nn.in_top_k(logits, labels, 1)
     accuracy = tf.reduce_mean(tf.cast(correct, tf.float32))
 
     return {
