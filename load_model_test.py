@@ -1,4 +1,4 @@
-from make_mnist_cnn_tf import build_cnn_mnist_model
+from make_mnist_cnn_tf import build_cnn_mnist_model, reset_graph
 
 if __name__ == '__main__':
     reset_graph()
