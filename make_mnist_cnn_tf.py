@@ -8,7 +8,7 @@ def reset_graph(seed=42):
     tf.set_random_seed(seed)
     np.random.seed(seed)
 
-def cnn_mnist_model(input_placeholder, labels, training=True):
+def build_cnn_mnist_model(input_placeholder, labels, training=True):
     """Model function for CNN."""
     # Input Layer
     input_layer = tf.reshape(input_placeholder, [-1, 28, 28, 1], name='x_reshaped')
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     reset_graph()
     x = tf.placeholder(tf.float32, shape=(None, 28, 28))
     y = tf.placeholder(tf.int32, shape=(None, 1))
-    model = cnn_model_fn(x, y)
+    model = build_cnn_mnist_model(x, y)
     init = tf.global_variables_initializer()
     saver = tf.train.Saver()
 
