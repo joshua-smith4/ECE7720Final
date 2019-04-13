@@ -69,7 +69,7 @@ def build_cnn_mnist_model(input_placeholder, labels, training=True):
 if __name__ == '__main__':
     reset_graph()
     x = tf.placeholder(tf.float32, shape=(None, 28, 28))
-    y = tf.placeholder(tf.int32, shape=(None, 1))
+    y = tf.placeholder(tf.int32, shape=(None,))
     model = build_cnn_mnist_model(x, y)
     init = tf.global_variables_initializer()
     saver = tf.train.Saver()
