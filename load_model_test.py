@@ -1,5 +1,6 @@
 from make_mnist_cnn_tf import build_cnn_mnist_model, reset_graph
 import tensorflow as tf
+import numpy as np
 
 if __name__ == '__main__':
     reset_graph()
