@@ -26,7 +26,10 @@ classes = tf.argmax(model['probability'], axis=1)
 adv_examples = []
 idx = 100
 epsilon_range = (0.01,0.2)
-with tf.Session() as sess:
+
+config = tf.ConfigProto(
+        device_count = {'GPU': 0})
+with tf.Session(config=config) as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
     print('Correct Class: {}'.format(y_train[idx]))
     prob_x = model['probability'].eval(
