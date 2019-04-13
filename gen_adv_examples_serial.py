@@ -2,6 +2,15 @@ from make_mnist_cnn_tf import build_cnn_mnist_model, reset_graph
 import tensorflow as tf
 import numpy as np
 import time
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--epsmin', type=float, default=0.01)
+parser.add_argument('--epsmax', type=float, default=0.2)
+parser.add_argument('--idx', type=int, default=100)
+parser.add_argument('--numgens', type=int, default=1000)
+
+args = parser.parse_args()
 
 reset_graph()
 x = tf.placeholder(tf.float32, shape=(None, 28, 28))
@@ -25,8 +34,8 @@ adv_example = tf.clip_by_value(adv_example_unclipped,0.0,1.0)
 classes = tf.argmax(model['probability'], axis=1)
 
 adv_examples = []
-idx = 100
-epsilon_range = (0.01,0.2)
+idx = args.idx
+epsilon_range = (args.epsmin, args.epsmax)
 
 config = tf.ConfigProto(
         device_count = {'GPU': 0}
@@ -34,14 +43,12 @@ config = tf.ConfigProto(
 with tf.Session(config=config) as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
     print('Correct Class: {}'.format(y_train[idx]))
-    prob_x = model['probability'].eval(
-        feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
+    prob_x = model['probability'].eval(feed_dict={x: x_train[idx:idx+1]})
     print(prob_x, prob_x.shape)
-    class_x = classes.eval(
-        feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
+    class_x = classes.eval(feed_dict={x: x_train[idx:idx+1]})
     print('Class by network: {}'.format(class_x))
     start = time.time()
-    for i in range(1000):
+    for i in range(args.numgens):
         adv = adv_example.eval(
             feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(epsilon_range[0], epsilon_range[1], size=(28,28))})
         class_adv = classes.eval(
