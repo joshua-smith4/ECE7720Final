@@ -96,10 +96,10 @@ if __name__ == '__main__':
                 x_batch = x_train[batch_indices]
                 y_batch = y_train[batch_indices]
                 sess.run(model['train'], feed_dict={x: x_batch, y: y_batch})
-            acc_train = model['accuracy'].eval(feed_dict={x: x_train, y: y_train})
+            # acc_train = model['accuracy'].eval(feed_dict={x: x_train, y: y_train})
             acc_test = model['accuracy'].eval(feed_dict={x: x_test, y: y_test})
-            print(epoch, "Train accuracy:", acc_train, "Test accuracy:", acc_test)
+            print(epoch, "Test accuracy:", acc_test)
             if acc_test > acc:
                 print('saving model: {}'.format(epoch))
                 acc = acc_test
-                saver.save(sess, "./models/mnist_cnn_tf")
+                saver.save(sess, "./models/mnist_cnn_tf/mnist_cnn_tf")
