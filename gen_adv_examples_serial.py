@@ -50,6 +50,7 @@ with tf.Session(config=config) as sess:
         adv = adv_example.eval(
             feed_dict={
                 x: x_train[idx:idx + 1],
+                y: y_train[idx:idx + 1],
                 epsilon: np.random.uniform(
                     epsilon_range[0], epsilon_range[1], size=(28, 28))
             })
@@ -58,3 +59,4 @@ with tf.Session(config=config) as sess:
             adv_examples += [adv]
     print('duration: {}'.format(time.time() - start))
 adv_examples = np.concatenate(adv_examples, axis=0)
+print('Found {} adversarial examples.'.format(adv_examples.shape[0]))
