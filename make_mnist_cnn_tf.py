@@ -14,7 +14,7 @@ def build_cnn_mnist_model(input_placeholder, labels, training=True):
     input_layer = tf.reshape(input_placeholder, [-1, 28, 28, 1], name='x_reshaped')
 
     # Convolutional Layer #1
-    conv1 = tf.keras.layers.Conv2D(
+    conv1 = tf.layers.conv2d(
         inputs=input_layer,
         filters=32,
         kernel_size=[5, 5],
@@ -23,27 +23,27 @@ def build_cnn_mnist_model(input_placeholder, labels, training=True):
         name='conv_1')
 
     # Pooling Layer #1
-    pool1 = tf.keras.layers.max_pooling2d(inputs=conv1, pool_size=[2, 2], strides=2, name='pool_1')
+    pool1 = tf.layers.max_pooling2d(inputs=conv1, pool_size=[2, 2], strides=2, name='pool_1')
 
     # Convolutional Layer #2 and Pooling Layer #2
-    conv2 = tf.keras.layers.Conv2D(
+    conv2 = tf.layers.conv2d(
         inputs=pool1,
         filters=64,
         kernel_size=[5, 5],
         padding="same",
         activation=tf.nn.relu,
         name='conv_2')
-    pool2 = tf.keras.layers.max_pooling2d(inputs=conv2, pool_size=[2, 2], strides=2, name='pool_2')
+    pool2 = tf.layers.max_pooling2d(inputs=conv2, pool_size=[2, 2], strides=2, name='pool_2')
 
     # Dense Layer
     pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64])
-    dense = tf.keras.layers.dense(
+    dense = tf.layers.dense(
         inputs=pool2_flat, units=1024, activation=tf.nn.relu)
-    dropout = tf.keras.layers.dropout(
+    dropout = tf.layers.dropout(
         inputs=dense, rate=0.4, training=training)
 
     # Logits Layer
-    logits = tf.keras.layers.dense(inputs=dropout, units=10)
+    logits = tf.layers.dense(inputs=dropout, units=10)
 
     classes = tf.argmax(input=logits, axis=1)
     probabilities = tf.nn.softmax(logits, name="softmax_tensor")
