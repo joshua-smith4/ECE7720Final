@@ -1,6 +1,7 @@
 from make_mnist_cnn_tf import build_cnn_mnist_model, reset_graph
 import tensorflow as tf
 import numpy as np
+import time
 
 reset_graph()
 x = tf.placeholder(tf.float32, shape=(None, 28, 28))
@@ -38,6 +39,7 @@ with tf.Session(config=config) as sess:
     class_x = classes.eval(
         feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
     print('Class by network: {}'.format(class_x))
+    start = time.time()
     for i in range(1000):
         adv = adv_example.eval(
             feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(epsilon_range[0], epsilon_range[1], size=(28,28))})
@@ -46,4 +48,5 @@ with tf.Session(config=config) as sess:
         print('Class of adv: {}'.format(class_adv))
         if class_adv != y_train[0]:
             adv_examples += [adv]
+    print('duration: {}'.format(time.time() - start))
 adv_examples = np.concatenate(adv_examples, axis=0)
