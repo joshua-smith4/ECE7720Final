@@ -20,7 +20,7 @@ epsilon = tf.placeholder(tf.float32)
 optimal_perturbation = tf.multiply(tf.sign(grad), epsilon)
 adv_example = tf.add(optimal_perturbation, x)
 
-classes = tf.argmax(model['probability'], axis=0)
+classes = tf.argmax(model['probability'], axis=1)
 
 adv_examples = []
 idx = 100
@@ -29,7 +29,7 @@ with tf.Session() as sess:
     print('Correct Class: {}'.format(y_train[idx]))
     prob_x = model['probability'].eval(
         feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
-    print(prob_x)
+    print(prob_x, prob_x.shape)
     class_x = classes.eval(
         feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
     print('Class by network: {}'.format(class_x))
