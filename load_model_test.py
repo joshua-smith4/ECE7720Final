@@ -36,7 +36,7 @@ with tf.Session() as sess:
     print('Class by network: {}'.format(class_x))
     for i in range(1000):
         adv = adv_example.eval(
-            feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
+            feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2, size=(28,28))})
         class_adv = classes.eval(
             feed_dict={x: adv, y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
         print('Class of adv: {}'.format(class_adv))
