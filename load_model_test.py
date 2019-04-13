@@ -29,7 +29,7 @@ idx = 100
 epsilon_range = (0.01,0.2)
 
 config = tf.ConfigProto(
-        #device_count = {'GPU': 0}
+        device_count = {'GPU': 0}
 )
 with tf.Session(config=config) as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
