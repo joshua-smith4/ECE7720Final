@@ -68,11 +68,11 @@ def cnn_mnist_model(input_placeholder, labels, training=True):
 
 if __name__ == '__main__':
     reset_graph()
-    init = tf.global_variables_initializer()
-    saver = tf.train.Saver()
     x = tf.placeholder(tf.float32, shape=(None, 28, 28))
     y = tf.placeholder(tf.int32, shape=(None, 1))
     model = cnn_model_fn(x, y)
+    init = tf.global_variables_initializer()
+    saver = tf.train.Saver()
 
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
     x_train = x_train/np.float32(255)
