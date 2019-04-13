@@ -29,7 +29,8 @@ idx = 100
 epsilon_range = (0.01,0.2)
 
 config = tf.ConfigProto(
-        device_count = {'GPU': 0})
+        #device_count = {'GPU': 0}
+)
 with tf.Session(config=config) as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
     print('Correct Class: {}'.format(y_train[idx]))
@@ -45,7 +46,7 @@ with tf.Session(config=config) as sess:
             feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(epsilon_range[0], epsilon_range[1], size=(28,28))})
         class_adv = classes.eval(
             feed_dict={x: adv, y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
-        print('Class of adv: {}'.format(class_adv))
+        # print('Class of adv: {}'.format(class_adv))
         if class_adv != y_train[0]:
             adv_examples += [adv]
     print('duration: {}'.format(time.time() - start))
