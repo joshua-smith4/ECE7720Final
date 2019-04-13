@@ -25,6 +25,7 @@ classes = tf.argmax(model['probability'], axis=1)
 
 adv_examples = []
 idx = 100
+epsilon_range = (0.01,0.2)
 with tf.Session() as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
     print('Correct Class: {}'.format(y_train[idx]))
@@ -36,7 +37,7 @@ with tf.Session() as sess:
     print('Class by network: {}'.format(class_x))
     for i in range(1000):
         adv = adv_example.eval(
-            feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2, size=(28,28))})
+            feed_dict={x: x_train[idx:idx+1], y: y_train[idx:idx+1], epsilon: np.random.uniform(epsilon_range[0], epsilon_range[1], size=(28,28))})
         class_adv = classes.eval(
             feed_dict={x: adv, y: y_train[idx:idx+1], epsilon: np.random.uniform(0.001, 0.2)})
         print('Class of adv: {}'.format(class_adv))
