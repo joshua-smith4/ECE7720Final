@@ -42,6 +42,11 @@ config = tf.ConfigProto(
 )
 with tf.Session(config=config) as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
+    acc_test = model['accuracy'].eval(feed_dict={
+        x: x_test,
+        y: y_test,
+    })
+    print('Accuracy of model on test data: {}'.format(acc_test))
     print('Correct Class: {}'.format(y_train[idx]))
     class_x = classes.eval(feed_dict={x: x_train[idx:idx + 1]})
     print('Predicted class of input {}: {}'.format(idx, class_x))
