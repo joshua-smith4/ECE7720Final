@@ -83,8 +83,8 @@ with tf.Session(config=config) as sess:
     res_gpu = gpuarray.GPUArray((args.numgens*28*28,), dtype=np.float32)
 
     gen_examples_fgsm(
-        grid,
-        block,
+        # grid,
+        # block,
         res_gpu,
         x_gpu,
         grad_gpu,
