@@ -1,6 +1,6 @@
 #include "cublas_v2.h"
 
-__global__ void gpu_blas_mmul(const float *A, const float *B, float *C, const int m, const int k, const int n) {
+void gpu_blas_mmul(const float *A, const float *B, float *C, const int m, const int k, const int n) {
      int lda=m,ldb=k,ldc=m;
      const float alf = 1;
      const float bet = 0;
@@ -16,4 +16,9 @@ __global__ void gpu_blas_mmul(const float *A, const float *B, float *C, const in
 
      // Destroy the handle
      cublasDestroy(handle);
+}
+
+int main()
+{
+  return 0;
 }
