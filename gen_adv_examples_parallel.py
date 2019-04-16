@@ -95,9 +95,4 @@ with tf.Session(config=config) as sess:
     class_adv = classes.eval(feed_dict={x: adv_examples})
     print('duration: {}'.format(time.time() - start))
     num_adv_examples = np.sum((class_adv == y_train[idx]).astype(np.int32))
-num_copies = 0
-for i in range(adv_examples.shape[0]):
-    for j in range(i+1, adv_examples.shape[0]):
-        if np.array_equal(adv_examples[i],adv_examples[j]):
-            num_copies += 1
-print('Found {} unique adversarial examples.'.format(num_adv_examples - num_copies))
+print('Found {} adversarial examples.'.format(num_adv_examples))
