@@ -90,7 +90,7 @@ with tf.Session(config=config) as sess:
         grad_gpu,
         epsilon_gpu,
         args.numgens,
-        28*28,
+        int(28*28),
     )
     adv_examples = res_gpu.get().reshape((args.numgens,28,28))
     class_adv = classes.eval(feed_dict={x: adv_examples})
