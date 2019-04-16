@@ -45,17 +45,17 @@ def jsma_symbolic(x, model, theta, gamma, clip_min, clip_max):
 
     tmp = np.ones((nb_features, nb_features), int)
     np.fill_diagonal(tmp, 0)
-    zero_diagonal = tf.constant(tmp, tf_dtype)
+    zero_diagonal = tf.constant(tmp, tf.float32)
 
     # Compute our initial search domain. We optimize the initial search domain
     # by removing all features that are already at their maximum values (if
     # increasing input features---otherwise, at their minimum value).
     if increase:
         search_domain = tf.reshape(
-            tf.cast(x < clip_max, tf_dtype), [-1, nb_features])
+            tf.cast(x < clip_max, tf.float32), [-1, nb_features])
     else:
         search_domain = tf.reshape(
-            tf.cast(x > clip_min, tf_dtype), [-1, nb_features])
+            tf.cast(x > clip_min, tf.float32), [-1, nb_features])
 
     # Loop variables
     # x_in: the tensor that holds the latest adversarial outputs that are in
@@ -90,7 +90,7 @@ def jsma_symbolic(x, model, theta, gamma, clip_min, clip_max):
         # The last dimention is added to allow broadcasting later.
         target_class = tf.reshape(
             tf.transpose(y_in, perm=[1, 0]), shape=[nb_classes, -1, 1])
-        other_classes = tf.cast(tf.not_equal(target_class, 1), tf_dtype)
+        other_classes = tf.cast(tf.not_equal(target_class, 1), tf.float32)
 
         grads_target = reduce_sum(grads * target_class, axis=0)
         grads_other = reduce_sum(grads * other_classes, axis=0)
@@ -99,7 +99,7 @@ def jsma_symbolic(x, model, theta, gamma, clip_min, clip_max):
         # Subtract 2 times the maximum value from those value so that
         # they won't be picked later
         increase_coef = (4 * int(increase) - 2) \
-            * tf.cast(tf.equal(domain_in, 0), tf_dtype)
+            * tf.cast(tf.equal(domain_in, 0), tf.float32)
 
         target_tmp = grads_target
         target_tmp -= increase_coef \
@@ -120,7 +120,7 @@ def jsma_symbolic(x, model, theta, gamma, clip_min, clip_max):
             scores_mask = ((target_sum < 0) & (other_sum > 0))
 
         # Create a 2D numpy array of scores for each pair of candidate features
-        scores = tf.cast(scores_mask, tf_dtype) \
+        scores = tf.cast(scores_mask, tf.float32) \
             * (-target_sum * other_sum) * zero_diagonal
 
         # Extract the best two pixels
@@ -137,7 +137,7 @@ def jsma_symbolic(x, model, theta, gamma, clip_min, clip_max):
         cond = mod_not_done & (reduce_sum(domain_in, axis=1) >= 2)
 
         # Update the search domain
-        cond_float = tf.reshape(tf.cast(cond, tf_dtype), shape=[-1, 1])
+        cond_float = tf.reshape(tf.cast(cond, tf.float32), shape=[-1, 1])
         to_mod = (p1_one_hot + p2_one_hot) * cond_float
 
         domain_out = domain_in - to_mod
