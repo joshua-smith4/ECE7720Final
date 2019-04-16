@@ -73,18 +73,16 @@ with tf.Session(config=config) as sess:
     # gen_examples_fgsm.prepare("PPPPII")
 
     start = time.time()
-    # gen = curand.MRG32k3aRandomNumberGenerator()
-    # epsilon_gpu = gpuarray.GPUArray((args.numgens,), dtype=np.float32)
-    # gen.fill_uniform(epsilon_gpu)
-    epsilon_gpu = curand.rand((args.numgens,))
+    gen = curand.MRG32k3aRandomNumberGenerator()
+    epsilon_gpu = gpuarray.GPUArray((args.numgens,), dtype=np.float32)
+    gen.fill_uniform(epsilon_gpu)
+    # epsilon_gpu = curand.rand((args.numgens,))
     epsilon_gpu = epsilon_gpu * (args.epsmax - args.epsmin) + args.epsmin
     x_gpu = gpuarray.to_gpu(x_flat)
     grad_gpu = gpuarray.to_gpu(grad_flat)
     res_gpu = gpuarray.GPUArray((args.numgens*28*28,), dtype=np.float32)
 
     gen_examples_fgsm(
-        # grid,
-        # block,
         res_gpu,
         x_gpu,
         grad_gpu,
