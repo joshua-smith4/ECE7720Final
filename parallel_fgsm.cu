@@ -29,11 +29,13 @@ __global__ void mult_vec_seg(
   }
 }
 
-__global__ void add_vec_seg(
+__global__ void add_vec_seg_clip(
   float *res,
   float *x,
   int len,
-  int num_fill
+  int num_fill,
+  float clip_min,
+  float clip_max
 )
 {
   int resIdx = blockDim.x * blockIdx.x + threadIdx.x;
@@ -41,6 +43,8 @@ __global__ void add_vec_seg(
   if (resIdx < num_fill * len)
   {
     res[resIdx] += x[xIdx];
+    if(res[resIdx] < clip_min) res[resIdx] = clip_min;
+    if(res[resIdx] > clip_max) res[resIdx] = clip_max;
   }
 }
 
@@ -61,6 +65,6 @@ __global__ void gen_examples_fgsm(
     cudaDeviceSynchronize();
     mult_vec_seg<<<res_len, 1>>>(res, epsilon, len_example, num_examples);
     cudaDeviceSynchronize();
-    add_vec_seg<<<res_len, 1>>>(res, x, len_example, num_examples);
+    add_vec_seg_clip<<<res_len, 1>>>(res, x, len_example, num_examples, 0.0, 1.0);
   }
 }
