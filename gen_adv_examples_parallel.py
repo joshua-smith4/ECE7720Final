@@ -89,7 +89,7 @@ with tf.Session(config=config) as sess:
         x_gpu,
         grad_gpu,
         epsilon_gpu,
-        args.numgens,
+        int(args.numgens),
         int(28*28),
     )
     adv_examples = res_gpu.get().reshape((args.numgens,28,28))
