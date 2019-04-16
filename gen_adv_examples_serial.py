@@ -57,7 +57,9 @@ with tf.Session(config=config) as sess:
                 x: x_train[idx:idx + 1],
                 y: y_train[idx:idx + 1],
                 epsilon: np.random.uniform(
-                    epsilon_range[0], epsilon_range[1], size=(28, 28))
+                    epsilon_range[0], epsilon_range[1],
+                    # size=(28, 28)
+                    )
             })
         class_adv = classes.eval(feed_dict={x: adv})
         if class_adv != y_train[0]:
