@@ -78,7 +78,7 @@ def jsma_symbolic(x, model, theta, gamma, clip_min, clip_max):
 
         # create the Jacobian graph
         list_derivatives = []
-        for class_ind in xrange(nb_classes):
+        for class_ind in range(nb_classes):
             derivatives = tf.gradients(logits[:, class_ind], x_in)
             list_derivatives.append(derivatives[0])
         grads = tf.reshape(
