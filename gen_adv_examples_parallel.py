@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import pycuda.driver as cuda
 import pycuda.autoinit
-from pycuda.compiler import SourceModule
+from pycuda.compiler import DynamicSourceModule
 import pycuda.curandom as curand
 import pycuda.gpuarray as gpuarray
 import time
