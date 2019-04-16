@@ -1,6 +1,6 @@
 #include "cublas_v2.h"
 
-void gpu_blas_mmul(const float *A, const float *B, float *C, const int m, const int k, const int n) {
+__global__ void gpu_blas_mmul(const float *A, const float *B, float *C, const int m, const int k, const int n) {
      int lda=m,ldb=k,ldc=m;
      const float alf = 1;
      const float bet = 0;
