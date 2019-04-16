@@ -61,9 +61,10 @@ with tf.Session() as sess:
     grad_flat = np.squeeze(grad_val).flatten()
     x_flat = x_train[idx].flatten()
     start = time.time()
-    gen = curand.MRG32k3aRandomNumberGenerator()
-    epsilon_gpu = gpuarray.GPUArray((args.numgens,), dtype=np.float32)
-    gen.fill_uniform(epsilon_gpu)
+    # gen = curand.MRG32k3aRandomNumberGenerator()
+    # epsilon_gpu = gpuarray.GPUArray((args.numgens,), dtype=np.float32)
+    # gen.fill_uniform(epsilon_gpu)
+    epsilon_gpu = curand.rand((args.numgens,))
     epsilon_gpu = epsilon_gpu * (args.epsmax - args.epsmin) + args.epsmin
     x_gpu = gpuarray.to_gpu(x_flat)
     grad_gpu = gpuarray.to_gpu(grad_flat)
