@@ -93,6 +93,6 @@ with tf.Session(config=config) as sess:
     )
     adv_examples = res_gpu.get().reshape((args.numgens,28,28))
     class_adv = classes.eval(feed_dict={x: adv_examples})
-    print('duration: {}'.format(time.time() - start))
+    print('Duration (s): {}'.format(time.time() - start))
     num_adv_examples = np.sum((class_adv == y_train[idx]).astype(np.int32))
 print('Found {} adversarial examples.'.format(num_adv_examples))

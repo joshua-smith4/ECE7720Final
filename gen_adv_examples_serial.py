@@ -64,7 +64,6 @@ with tf.Session(config=config) as sess:
         class_adv = classes.eval(feed_dict={x: adv})
         if class_adv != y_train[0]:
             adv_examples += [adv]
-            # print('Adv Example {} with class {}'.format(i, class_adv))
-    print('duration: {}'.format(time.time() - start))
+    print('Duration (s): {}'.format(time.time() - start))
 adv_examples = np.concatenate(adv_examples, axis=0)
 print('Found {} adversarial examples.'.format(adv_examples.shape[0]))
