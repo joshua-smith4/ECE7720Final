@@ -26,7 +26,7 @@ def jsma_symbolic(x, model, theta, gamma, clip_min, clip_max):
     else:
         nb_classes = labels.get_shape().as_list()[1]
     y_target = tf.py_func(random_targets, [labels],
-                          self.tf_dtype)
+                          tf.float32)
     y_target.set_shape([None, nb_classes])
 
     nb_classes = int(y_target.shape[-1].value)
