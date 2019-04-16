@@ -66,7 +66,7 @@ with tf.Session(config=config) as sess:
     x_flat = x_train[idx].flatten()
     with open('parallel_fgsm.cu') as f:
         src = f.read()
-    src_comp = DynamicSourceModule(src, cuda_libdir='/usr/local/cuda/lib64')
+    src_comp = DynamicSourceModule(src)
     grid = (1,1)
     block = (1,1,1)
     gen_examples_fgsm = src_comp.get_function("gen_examples_fgsm")
