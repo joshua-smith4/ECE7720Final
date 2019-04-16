@@ -63,6 +63,7 @@ def build_cnn_mnist_model(input_placeholder, labels, training=True):
         'optimize': optimizer,
         'probability': probabilities,
         'accuracy': accuracy,
+        'logits': logits,
     }
 
 
