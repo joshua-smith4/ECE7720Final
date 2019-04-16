@@ -70,7 +70,7 @@ with tf.Session(config=config) as sess:
     grid = (1,1)
     block = (1,1,1)
     gen_examples_fgsm = src_comp.get_function("gen_examples_fgsm")
-    gen_examples_fgsm.prepare("PPPPii")
+    gen_examples_fgsm.prepare("PPPPII")
 
     start = time.time()
     # gen = curand.MRG32k3aRandomNumberGenerator()
