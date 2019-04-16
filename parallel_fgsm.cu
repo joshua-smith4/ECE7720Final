@@ -1,5 +1,5 @@
 
-__device__ void fill_with(
+__global__ void fill_with(
   float *res,
   float *gradsign,
   int len,
@@ -14,7 +14,7 @@ __device__ void fill_with(
   }
 }
 
-__device__ void mult_vec_seg(
+__global__ void mult_vec_seg(
   float *res,
   float *epsilon,
   int len,
@@ -29,7 +29,7 @@ __device__ void mult_vec_seg(
   }
 }
 
-__device__ void add_vec_seg(
+__global__ void add_vec_seg(
   float *res,
   float *x,
   int len,
@@ -57,13 +57,10 @@ __global__ void gen_examples_fgsm(
   if (idx == 0)
   {
     int res_len = len_example*num_examples;
-    fill_with<<<res_len, 1>>>(
-      res, gradsign, len_example, num_examples);
+    fill_with<<<res_len, 1>>>(res, gradsign, len_example, num_examples);
     cudaDeviceSynchronize();
-    mult_vec_seg<<<res_len, 1>>>(
-      res, epsilon, len_example, num_examples);
+    mult_vec_seg<<<res_len, 1>>>(res, epsilon, len_example, num_examples);
     cudaDeviceSynchronize();
-    add_vec_seg<<<res_len, 1>>>(
-      res, x, len_example, num_examples);
+    add_vec_seg<<<res_len, 1>>>(res, x, len_example, num_examples);
   }
 }

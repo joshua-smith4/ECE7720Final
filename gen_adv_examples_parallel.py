@@ -60,6 +60,14 @@ with tf.Session() as sess:
     })
     grad_flat = np.squeeze(grad_val).flatten()
     x_flat = x_train[idx].flatten()
+    with open('parallel_fgsm.cu') as f:
+        src = f.read()
+    src_comp = SourceModule(src, options='')
+    grid = (1,1)
+    block = (1,1,1)
+    gen_examples_fgsm = src_comp.get_function("gen_examples_fgsm")
+    gen_examples_fgsm.prepare("PPPPii")
+
     start = time.time()
     # gen = curand.MRG32k3aRandomNumberGenerator()
     # epsilon_gpu = gpuarray.GPUArray((args.numgens,), dtype=np.float32)
@@ -70,13 +78,6 @@ with tf.Session() as sess:
     grad_gpu = gpuarray.to_gpu(grad_flat)
     res_gpu = gpuarray.GPUArray((args.numgens*28*28,), dtype=np.float32)
 
-    with open('parallel_fgsm.cu') as f:
-        src = f.read()
-    src_comp = SourceModule(src)
-    grid = (1,1)
-    block = (1,1,1)
-    gen_examples_fgsm = src_comp.get_function("gen_examples_fgsm")
-    gen_examples_fgsm.prepare("PPPPii")
     gen_examples_fgsm.prepared_call(
         grid,
         block,
