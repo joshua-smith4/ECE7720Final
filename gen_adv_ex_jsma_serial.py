@@ -29,6 +29,15 @@ adv_examples = []
 idx = args.idx
 epsilon_range = (args.epsmin, args.epsmax)
 
+adv_x = jsma_symbolic(
+    x,
+    model,
+    theta=1.0,
+    gamma=0.1,
+    clip_min=0.0,
+    clip_max=1.0,
+)
+
 init = tf.global_variables_initializer()
 saver = tf.train.Saver()
 
@@ -46,6 +55,11 @@ with tf.Session(config=config) as sess:
     class_x = classes.eval(feed_dict={x: x_train[idx:idx + 1]})
     print('Predicted class of input {}: {}'.format(idx, class_x))
     start = time.time()
+    adv_example = adv_x.eval(feed_dict={
+        x: x_train[idx:idx+1],
+        y: y_train[idx:idx+1],
+    })
+    print('adv_example', adv_example.shape)
     for i in range(args.numgens):
 
         class_adv = classes.eval(feed_dict={x: adv})
