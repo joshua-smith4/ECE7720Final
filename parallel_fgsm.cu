@@ -58,7 +58,7 @@ __global__ void gen_examples_fgsm(
   {
     int res_len = len_example*num_examples;
     fill_with<<<res_len, 1>>>(
-      res, gradsign, len_example, num_examples)
+      res, gradsign, len_example, num_examples);
     cudaDeviceSynchronize();
     mult_vec_seg<<<res_len, 1>>>(
       res, epsilon, len_example, num_examples);
