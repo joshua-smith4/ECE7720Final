@@ -30,6 +30,7 @@ y_train = y_train.astype(np.int32)
 x_test = x_test / np.float32(255)
 y_test = y_test.astype(np.int32)
 
+
 print('Type of x_train',x_train.dtype)
 
 grad, = tf.gradients(model['loss'], x)
@@ -44,7 +45,10 @@ classes = tf.argmax(model['probability'], axis=1)
 idx = args.idx
 epsilon_range = (args.epsmin, args.epsmax)
 
-with tf.Session() as sess:
+config = tf.ConfigProto(
+    device_count={'GPU': 0}
+)
+with tf.Session(config=config) as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
     acc_test = model['accuracy'].eval(feed_dict={
         x: x_test,
