@@ -4,6 +4,8 @@ import numpy as np
 import pycuda.driver as cuda
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
+import pycuda.curandom as curand
+import pycuda.gpuarray as gpuarray
 import time
 import argparse
 
@@ -28,22 +30,21 @@ y_train = y_train.astype(np.int32)
 x_test = x_test / np.float32(255)
 y_test = y_test.astype(np.int32)
 
+print('Type of x_train',x_train.dtype)
+
 grad, = tf.gradients(model['loss'], x)
+gradsign = tf.cast(tf.sign(grad), tf.float32)
 epsilon = tf.placeholder(tf.float32)
-optimal_perturbation = tf.multiply(tf.sign(grad), epsilon)
+optimal_perturbation = tf.multiply(gradsign, epsilon)
 adv_example_unclipped = tf.add(optimal_perturbation, x)
 adv_example = tf.clip_by_value(adv_example_unclipped, 0.0, 1.0)
 
 classes = tf.argmax(model['probability'], axis=1)
 
-adv_examples = []
 idx = args.idx
 epsilon_range = (args.epsmin, args.epsmax)
 
-config = tf.ConfigProto(
-    device_count={'GPU': 0}
-)
-with tf.Session(config=config) as sess:
+with tf.Session() as sess:
     saver.restore(sess, './models/mnist_cnn_tf/mnist_cnn_tf')
     acc_test = model['accuracy'].eval(feed_dict={
         x: x_test,
@@ -53,24 +54,45 @@ with tf.Session(config=config) as sess:
     print('Correct Class: {}'.format(y_train[idx]))
     class_x = classes.eval(feed_dict={x: x_train[idx:idx + 1]})
     print('Predicted class of input {}: {}'.format(idx, class_x))
+    grad_val = gradsign.eval(feed_dict={
+        x: x_train[idx:idx+1],
+        y: y_train[idx:idx+1]
+    })
+    grad_flat = np.squeeze(grad_val).flatten()
+    x_flat = x_train[idx].flatten()
     start = time.time()
-    for i in range(args.numgens):
-        adv = adv_example.eval(
-            feed_dict={
-                x: x_train[idx:idx + 1],
-                y: y_train[idx:idx + 1],
-                epsilon: np.random.uniform(
-                    epsilon_range[0], epsilon_range[1], size=(28, 28))
-            })
-        class_adv = classes.eval(feed_dict={x: adv})
-        if class_adv != y_train[0]:
-            adv_examples += [adv]
-            # print('Adv Example {} with class {}'.format(i, class_adv))
+    gen = curand.MRG32k3aRandomNumberGenerator()
+    epsilon_gpu = gpuarray.GPUArray((args.numgens,), dtype=np.float32)
+    gen.fill_uniform(epsilon_gpu)
+    epsilon_gpu = epsilon_gpu * (args.epsmax - args.epsmin) + args.epsmin
+    x_gpu = gpuarray.to_gpu(x_flat)
+    grad_gpu = gpuarray.to_gpu(grad_flat)
+    res_gpu = gpuarray.GPUArray((args.numgens*28*28,), dtype=np.float32)
+
+    with open('parallel_fgsm.cu') as f:
+        src = f.read()
+    src_comp = SourceModule(src)
+    grid = (1,1)
+    block = (1,1,1)
+    gen_examples_fgsm = src_comp.get_function("gen_examples_fgsm")
+    gen_examples_fgsm.prepare("PPPPii")
+    gen_examples_fgsm.prepared_call(
+        grid,
+        block,
+        res_gpu,
+        x_gpu,
+        grad_gpu,
+        epsilon_gpu,
+        args.numgens,
+        28*28,
+    )
+    adv_examples = res_gpu.get().reshape((args.numgens,28,28))
+    class_adv = classes.eval(feed_dict={x: adv_examples})
     print('duration: {}'.format(time.time() - start))
-adv_examples = np.concatenate(adv_examples, axis=0)
+    num_adv_examples = np.sum((class_adv == y_train[idx]).astype(np.int32))
 num_copies = 0
 for i in range(adv_examples.shape[0]):
     for j in range(i+1, adv_examples.shape[0]):
         if np.array_equal(adv_examples[i],adv_examples[j]):
             num_copies += 1
-print('Found {} unique adversarial examples.'.format(adv_examples.shape[0] - num_copies))
+print('Found {} unique adversarial examples.'.format(num_adv_examples - num_copies))
