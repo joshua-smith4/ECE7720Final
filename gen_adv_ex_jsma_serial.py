@@ -3,6 +3,7 @@ import tensorflow as tf
 import numpy as np
 import time
 import argparse
+from jsma_lib import jsma_symbolic
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--epsmin', type=float, default=0.01)
