@@ -89,8 +89,8 @@ with tf.Session(config=config) as sess:
         x_gpu,
         grad_gpu,
         epsilon_gpu,
-        int(args.numgens),
-        int(28*28),
+        np.int32(args.numgens),
+        np.int32(28*28),
     )
     adv_examples = res_gpu.get().reshape((args.numgens,28,28))
     class_adv = classes.eval(feed_dict={x: adv_examples})
