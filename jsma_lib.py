@@ -17,7 +17,7 @@ def jsma_symbolic(x, model, theta, gamma, clip_min, clip_max):
 
         return result
 
-    preds_max = reduce_max(model['probability'], 1, keepdims=True)
+    preds_max = tf.reduce_max(model['probability'], 1, keepdims=True)
     original_predictions = tf.to_float(
         tf.equal(model['probability'], preds_max))
     labels = tf.stop_gradient(original_predictions)
