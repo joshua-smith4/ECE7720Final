@@ -70,7 +70,7 @@ with tf.Session(config=config) as sess:
     grid = (1,1)
     block = (1,1,1)
     gen_examples_fgsm = src_comp.get_function("gen_examples_fgsm")
-    gen_examples_fgsm.prepare("PPPPII")
+    # gen_examples_fgsm.prepare("PPPPII")
 
     start = time.time()
     # gen = curand.MRG32k3aRandomNumberGenerator()
@@ -82,7 +82,7 @@ with tf.Session(config=config) as sess:
     grad_gpu = gpuarray.to_gpu(grad_flat)
     res_gpu = gpuarray.GPUArray((args.numgens*28*28,), dtype=np.float32)
 
-    gen_examples_fgsm.prepared_call(
+    gen_examples_fgsm(
         grid,
         block,
         res_gpu,
@@ -91,6 +91,7 @@ with tf.Session(config=config) as sess:
         epsilon_gpu,
         np.int32(args.numgens),
         np.int32(28*28),
+        block=block
     )
     adv_examples = res_gpu.get().reshape((args.numgens,28,28))
     class_adv = classes.eval(feed_dict={x: adv_examples})
