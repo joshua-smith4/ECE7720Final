@@ -10,9 +10,9 @@ import pycuda.curandom as curand
 import pycuda.gpuarray as gpuarray
 import time
 import argparse
-import cProfile, pstats, io
+# import cProfile, pstats, io
 
-pr = cProfile.Profile()
+# pr = cProfile.Profile()
 parser = argparse.ArgumentParser()
 parser.add_argument('--epsmin', type=float, default=0.01)
 parser.add_argument('--epsmax', type=float, default=0.2)
@@ -64,8 +64,8 @@ with tf.Session(config=config) as sess:
     print('Correct Class: {}'.format(y_train[idx]))
     class_x = classes.eval(feed_dict={x: x_train[idx:idx + 1]})
     print('Predicted class of input {}: {}'.format(idx, class_x))
-    if args.prof:
-        pr.enable()
+    # if args.prof:
+    #     pr.enable()
     grad_val = gradsign.eval(feed_dict={
         x: x_train[idx:idx+1],
         y: y_train[idx:idx+1]
@@ -100,12 +100,12 @@ with tf.Session(config=config) as sess:
         block=block
     )
     adv_examples = res_gpu.get().reshape((args.numgens,28,28))
-    if args.prof:
-        pr.disable()
+    # if args.prof:
+    #     pr.disable()
     class_adv = classes.eval(feed_dict={x: adv_examples})
     print('Duration (s): {}'.format(time.time() - start))
     num_adv_examples = np.sum((class_adv != y_train[idx]).astype(np.int32))
 print('Found {} adversarial examples.'.format(num_adv_examples))
 
-if args.prof:
-    pr.dump_stats(args.outfile)
+# if args.prof:
+#     pr.dump_stats(args.outfile)
