@@ -37,8 +37,6 @@ x_test = x_test / np.float32(255)
 y_test = y_test.astype(np.int32)
 
 
-print('Type of x_train',x_train.dtype)
-
 grad, = tf.gradients(model['loss'], x)
 gradsign = tf.cast(tf.sign(grad), tf.float32)
 epsilon = tf.placeholder(tf.float32)
