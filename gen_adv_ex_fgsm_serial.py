@@ -69,3 +69,16 @@ with tf.Session(config=config) as sess:
     print('Duration (s): {}'.format(time.time() - start))
 adv_examples = np.concatenate(adv_examples, axis=0)
 print('Found {} adversarial examples.'.format(adv_examples.shape[0]))
+print('Percentage true adversarial examples: {}'.format(adv_examples.shape[0]/args.numgens))
+avg = np.zeros_like(x_train[idx])
+for i in range(adv_examples.shape[0]):
+    avg += adv_examples[i]
+avg /= adv_examples.shape[0]
+stddev = 0
+for i in range(adv_examples.shape[0]):
+    tmp = adv_examples[i] - avg
+    tmp = np.square(tmp)
+    stddev += np.sum(tmp) / tmp.size
+
+stddev /= adv_examples.shape[0]
+print('Found std dev: {}'.format(stddev))
