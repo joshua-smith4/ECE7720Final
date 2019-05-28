@@ -118,9 +118,7 @@ for i in range(adv_examples.shape[0]):
 avg /= adv_examples.shape[0]
 stddev = 0
 for i in range(adv_examples.shape[0]):
-    tmp = adv_examples[i] - avg
-    tmp = np.square(tmp)
-    stddev += np.sum(tmp) / tmp.size
+    stddev += np.linalg.norm((adv_examples[i] - avg).flatten())
 
 stddev /= adv_examples.shape[0]
 print('Found std dev: {}'.format(stddev))
