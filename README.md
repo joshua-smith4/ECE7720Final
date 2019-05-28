@@ -13,3 +13,5 @@ parallel_fgsm.cu - kernels for implementing the parallel FGSM algorithm using CU
 profiling - profiling data for each method
 
 report.pdf - final report containing project description and results
+
+gen_adv_ex_fgsm_serial_intellifeature.py - fgsm with intellifeatures added to increase diversity of generated adversarial examples
