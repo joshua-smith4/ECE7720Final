@@ -9,10 +9,12 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--epsmin', type=float, default=0.01)
 parser.add_argument('--epsmax', type=float, default=0.2)
+parser.add_argument('--epsrand', type=float, default=1.0)
 parser.add_argument('--idx', type=int, default=100)
 parser.add_argument('--numgens', type=int, default=1000)
 parser.add_argument('--impdims', default='true')
 parser.add_argument('--perdims', type=float, default=0.8)
+parser.add_argument('--disp', type=int, default=0)
 
 args = parser.parse_args()
 
@@ -82,9 +84,11 @@ with tf.Session() as sess:
     diff_imp = x_train[idx] - averages[class_min_dist]
     sorted_indices = np.array(np.unravel_index(np.argsort(diff_imp, axis=None)[::-1], diff_imp.shape))
     if(args.impdims == 'true'):
+        print('Priority to changing the top {}% most important dimensions'.format(args.perdims*100.0))
         filled_mask = np.zeros_like(diff_imp)
         fill = 1.0
     else:
+        print('Priority to changing the top {}% least important dimensions'.format((1.0-args.perdims)*100.0))
         filled_mask = np.ones_like(diff_imp)
         fill = 0.0
     for i in range(int(diff_imp.size * args.perdims)):
@@ -99,7 +103,7 @@ with tf.Session() as sess:
                 x: x_train[idx:idx + 1],
                 y: y_train[idx:idx + 1],
                 mask_pos: filled_mask,
-                rand_fill: np.random.choice([-1.0,0.0,1.0],size=x_train[idx].shape,p=[0.4,0.2,0.4]),
+                rand_fill: np.random.choice([-1.0,0.0,1.0],size=x_train[idx].shape,p=[0.4,0.2,0.4]) * args.epsrand,
                 epsilon: np.random.uniform(
                     epsilon_range[0], epsilon_range[1],
                     # size=(28, 28)
@@ -122,4 +126,13 @@ for i in range(adv_examples.shape[0]):
 
 stddev /= adv_examples.shape[0]
 print('Found std dev: {}'.format(stddev))
+
+from PIL import Image
+for i in range(args.disp):
+    img = adv_examples[i]
+    img *= 255.0
+    img = img.astype(np.uint8)
+    img = Image.fromarray(img,'L')
+    img.show()
+
 
